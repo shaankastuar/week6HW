@@ -1,0 +1,150 @@
+<html>
+<head>
+	<title>Animal Picker</title>
+	<!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+</head>
+<body>
+		<div id="animalButtons">
+		</div>
+
+		<form id="animal-form">
+			<label for="animal-input">Add an animal!</label>
+			<input type="text" id="animal-input"><br>
+			<input id="addAnimal" type="submit" value="Submit Animal">
+		</form>
+
+		<div id="animalGifs">
+		</div>
+<script  src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src = 'hw.js'></script>
+<script type="text/javascript">
+
+// array for animals to be entered into
+
+var animalsArray = []
+
+
+
+// function getAnimalGifs(){
+
+
+
+// 	$.ajax({url: queryURL, method: 'GET'}).done(function(response) {
+//                     $("#animalGifs").html(response);
+//               }); 
+// }
+
+// pushes the animal into the array
+
+$('#addAnimal').on('click', function(){
+
+    var newAnimal = $('#animal-input').val().trim();
+
+    animalsArray.push(newAnimal);
+    
+    renderButtons();
+
+    return false;
+});
+// render the buttons after being entered
+
+function renderButtons(){ 
+    $('#animalButtons').empty();
+
+    for (var i = 0; i < animalsArray.length; i++){
+        var a = $('<button>')
+        a.addClass('animal');
+        a.attr('animalName', animalsArray[i]);
+        a.text(animalsArray[i]);
+        $('#animalButtons').append(a);
+    }
+};
+
+// having trouble getting the correct animal name to go to into the queryURL... i keep getting the same images. would love to see a way to see the actual queryURL being created. i put in a debugger afterwords and looked up the variable, and it keeps sending undefined.
+
+$('#animalButtons').on('click', function(){
+    	var animalName = $(this).data('animalname');
+    	debugger;
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + animalName + "&api_key=dc6zaTOxFJmzC&limit=10";
+        debugger;
+        $.ajax({
+                url: queryURL,
+                method: 'GET'
+            })
+            .done(function(response) {
+            			console.log(response);
+            		   var results = response.data;
+            		   console.log(results);
+            		   for (var i = 0; i < results.length; i++){
+            		   	var animalDiv = $('<div id=' + '\"' + results[i].id+ '\">');
+            		   	var p = $('<p>').text("Rating: " + results[i].rating);
+            		   	var animalImage = $('<img class= \"animalImage\">');
+            		   	animalImage.attr('src', results[i].images.fixed_height_still.url);
+            		   	animalImage.attr('data-state', 'still')
+;            		   	animalDiv.append(p);
+            		   	animalDiv.append(animalImage);
+            		   	$('#animalGifs').prepend(animalDiv); 
+      	   	            }
+          	        });
+       		   	});
+
+// static images to gif
+
+// attempt to pause and play - tried a couple times, but cannot get it to work. AHHH I AM SO FRUSTRATED THIS ISN'T WORKING NO MATTER WHAT I DO!!!
+
+			$('.animalImage').on('click', function(){
+				if ($(this).attr('data-state') == still){
+					var replaceStill = $(this).images.fixed_height.url;
+					$(this).html('<img>', replaceStill);
+						$(this).attr('data-state', 'animate');
+						animalDiv.prepend(replaceStill);
+					}else{
+						$(this.attr('src', $(this).data('still')));
+							$(this).attr('data-state', 'still');
+					}
+			});
+
+// old pause play attempt
+// 			$('.animalImage').on('click', function(){
+// 				var state = $(this).attr('data-state');
+// 					if (state == 'still'){
+// 						$(this.attr('src', $(this).data('animate')));
+// 						$(this).attr('data-state', 'animate');
+// 					}else{
+// 						$(this.attr('src', $(this).data('still')));
+// 							$(this).attr('data-state', 'still');
+// 					}
+// 			});
+  			
+ // function pausePlay() { $('.animalImage').on('click', function(){
+	//         var state = $(this).attr('data-state'); 
+	//         //----------------------------------------------------
+ //        	STEP THREE: 
+ //        		* if variable state is equal to 'still' then 
+ //        			* update the src attribute of this image that you clicked on to what data-animate is equal to for this image
+ //        			* and update the data-state attribute to 'animate'
+ //        		* if state does not equal 'still' then 
+ //        			* update the src attribute of this image that you clicked on to what data-still is equal to for this image
+ //        			* and update the data-state attribute to 'still'
+			
+ //        	//---------------FILL IN CODE HERE FOR STEP THREE----------------------------
+ //            if ( state == 'still'){
+ //                $(this).attr('src', $(this).data('animate'));
+ //                $(this).attr('data-state', 'animate');
+ //            }else{
+ //                $(this).attr('src', $(this).data('still'));
+ //                $(this).attr('data-state', 'still');
+ //            }
+ //            //----------------------------------------------------
+ //            //STEP FOUR: open the file in the browser and click on the images. Then click again to pause.
+	//     });
+	// }
+
+
+	// run the api function when an animal button is clicked
+
+    // $(document).on('click', '.animal', displayGifs);
+
+</script>
+</body>
+</html>
